@@ -7,9 +7,9 @@ url = "https://msk.spravker.ru/avtoservisy-avtotehcentry"
 page = urllib.request.urlopen(url)
 text = page.read().decode("utf-8")
 
-pattern = r'(?:class="org-widget-header__title-link"[^>]*>)(?P<Name>[^<]+)</a>(?:.*?class="[^"]*org-widget-header__meta--location"[^>]*>\s*)(?P<Address>[^<]+)</span>(?:.*?Телефон</span></dt>\s*<dd class="spec__value">\s*(?P<Phone>[^<]+)</dd>)?(?:.*?Часы работы</span></dt>\s*<dd class="spec__value">\s*(?P<WorkHours>[^<]+)</dd>)?'
+reg = r'(?:class="org-widget-header__title-link"[^>]*>)(?P<Name>[^<]+)</a>(?:.*?class="[^"]*org-widget-header__meta--location"[^>]*>\s*)(?P<Address>[^<]+)</span>(?:.*?Телефон</span></dt>\s*<dd class="spec__value">\s*(?P<Phone>[^<]+)</dd>)?(?:.*?Часы работы</span></dt>\s*<dd class="spec__value">\s*(?P<WorkHours>[^<]+)</dd>)?'
 
-result = re.findall(pattern, text, re.S)
+result = re.findall(reg, text, re.S)
 print(f"Nashlo: {len(result)}")
 
 f = open("result.csv", "w", encoding="utf-8")
@@ -21,7 +21,12 @@ for item in result:
     p = item[2].strip()
     h = item[3].strip()
 
-    line = n + "," + a + "," + p + "," + h + "\n"
+    if not p:
+        p = "-"
+    if not h:
+        h = "-"
+
+    line = n + ',"' + a + '","' + p + '","' + h + '"\n'
 
     f.write(line)
 
